@@ -498,7 +498,7 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
-function updatePositions(basicLeft) {
+function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
@@ -507,7 +507,8 @@ function updatePositions(basicLeft) {
  
   for (var i = 0, max = items.length; i < max; i++) {
       var phase = Math.sin(r + (i % 5));
-      items[i].style.left = basicLeft[i] + 100 * phase + 'px';
+      items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+      
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -543,11 +544,11 @@ document.addEventListener('DOMContentLoaded', function() {
           elem.src = "images/pizza.png";
           elem.style.height = "100px";
           elem.style.width = "73.333px";
-          basicLeft.push(c*s);
+          elem.basicLeft=c*s;
           //elem.style.top = (Math.floor(i / cols) * s) + 'px';
           elem.style.top = top;
           movingPizzas1.appendChild(elem);
       }
   }
-  updatePositions(basicLeft);
+  updatePositions();
 });
