@@ -504,10 +504,9 @@ function updatePositions(basicLeft) {
 
   var items = document.getElementsByClassName('mover');
   var r = document.body.scrollTop / 1250;
- // var basicLeft0 = items[0].basicLeft;
-  var phase;
+ 
   for (var i = 0, max = items.length; i < max; i++) {
-      phase = Math.sin(r + (i % 5));
+      var phase = Math.sin(r + (i % 5));
       items[i].style.left = basicLeft[i] + 100 * phase + 'px';
   }
 
