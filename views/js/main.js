@@ -450,10 +450,11 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.getElementsByClassName("randomPizzaContainer").length; i++) {
-        var dx = determineDx(document.getElementsByClassName("randomPizzaContainer")[i], size);
-        var newwidth = (document.getElementsByClassName("randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-        document.getElementsByClassName("randomPizzaContainer")[i].style.width = newwidth;
+      var randomPizzaContainer = document.getElementsByClassName("randomPizzaContainer");
+      var dx = determineDx(randomPizzaContainer[0], size);
+      var newwidth = (randomPizzaContainer[0].offsetWidth + dx) + 'px';
+    for (var i = 0, max=randomPizzaContainer.length; i < max; i++) {        
+        randompizzaContainer[i].style.width = newwidth;
     }
   }
 
@@ -469,8 +470,8 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
-for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
+var pizzasDiv = document.getElementById("randomPizzas");
+for (var i = 2; i < 100; i++) {  
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -497,18 +498,28 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
+function getPhase()
+{
+    var r = document.body.scrollTop / 1250;
+    var p = [];
+    for (var x=0;x<5;x++)
+    {                
+            p.push(Math.sin(r + x) * 100);        
+    }
+    return function (i) { return p[i % 5];}
+
+}
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
   var items = document.getElementsByClassName('mover');
-  var r = document.body.scrollTop / 1250;
+  var phases = getPhase();
  
   for (var i = 0, max = items.length; i < max; i++) {
-      var phase = Math.sin(r + (i % 5));
-      items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-      
+      items[i].style.transform = 'translateX(' + phases(i) + 'px)';
+      //items[i].style.left = items[i].basicLeft + phases(i) + 'px';      
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -544,7 +555,8 @@ document.addEventListener('DOMContentLoaded', function() {
           elem.src = "images/pizza.png";
           elem.style.height = "100px";
           elem.style.width = "73.333px";
-          elem.basicLeft=c*s;
+          elem.style.left = (c*s) + 'px';
+          //elem.basicLeft=c*s;
           //elem.style.top = (Math.floor(i / cols) * s) + 'px';
           elem.style.top = top;
           movingPizzas1.appendChild(elem);
